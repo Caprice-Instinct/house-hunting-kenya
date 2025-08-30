@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -24,6 +25,8 @@ export function PropertyDetailModal({
   onToggleFavorite,
   isFavorite,
 }: PropertyDetailModalProps) {
+  const [showContact, setShowContact] = useState(false)
+  
   if (!property) return null
 
   const landlord = dummyUsers.find((user) => user.id === property.landlordId)
@@ -64,7 +67,7 @@ export function PropertyDetailModal({
                   {isFavorite ? "Saved" : "Save"}
                 </Button>
               )}
-              <Button>Contact Landlord</Button>
+              <Button onClick={() => setShowContact(true)}>Contact Landlord</Button>
             </div>
           </div>
 
@@ -139,22 +142,40 @@ export function PropertyDetailModal({
                     <div className="font-medium">{landlord.name}</div>
                     <div className="text-sm text-muted-foreground">Property Owner</div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="bg-transparent">
-                      <Phone className="h-4 w-4 mr-1" />
-                      Call
-                    </Button>
-                    <Button size="sm" variant="outline" className="bg-transparent">
-                      <Mail className="h-4 w-4 mr-1" />
-                      Email
-                    </Button>
-                  </div>
+                  <Button onClick={() => setShowContact(true)}>View Contact</Button>
                 </div>
               </div>
             </div>
           )}
         </div>
       </DialogContent>
+      
+      {/* Contact Info Popup */}
+      <Dialog open={showContact} onOpenChange={setShowContact}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Contact Information</DialogTitle>
+          </DialogHeader>
+          {landlord && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <div className="font-medium text-lg">{landlord.name}</div>
+                <div className="text-sm text-muted-foreground">Property Owner</div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-muted-foreground" />
+                  <span>{landlord.phone}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-muted-foreground" />
+                  <span>{landlord.email}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </Dialog>
   )
 }
