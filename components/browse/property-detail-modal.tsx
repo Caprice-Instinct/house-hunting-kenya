@@ -64,7 +64,7 @@ export function PropertyDetailModal({
                   {isFavorite ? "Saved" : "Save"}
                 </Button>
               )}
-              <Button>Contact Landlord</Button>
+              <Button onClick={() => landlord?.phone && window.open(`tel:${landlord.phone}`, '_self')}>Contact Landlord</Button>
             </div>
           </div>
 
@@ -138,13 +138,35 @@ export function PropertyDetailModal({
                   <div>
                     <div className="font-medium">{landlord.name}</div>
                     <div className="text-sm text-muted-foreground">Property Owner</div>
+                    {landlord.phone && (
+                      <div className="text-sm text-muted-foreground mt-1">
+                        <Phone className="h-3 w-3 inline mr-1" />
+                        {landlord.phone}
+                      </div>
+                    )}
+                    {landlord.email && (
+                      <div className="text-sm text-muted-foreground">
+                        <Mail className="h-3 w-3 inline mr-1" />
+                        {landlord.email}
+                      </div>
+                    )}
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="bg-transparent">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="bg-transparent"
+                      onClick={() => landlord?.phone && window.open(`tel:${landlord.phone}`, '_self')}
+                    >
                       <Phone className="h-4 w-4 mr-1" />
                       Call
                     </Button>
-                    <Button size="sm" variant="outline" className="bg-transparent">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="bg-transparent"
+                      onClick={() => landlord?.email && window.open(`mailto:${landlord.email}`, '_self')}
+                    >
                       <Mail className="h-4 w-4 mr-1" />
                       Email
                     </Button>

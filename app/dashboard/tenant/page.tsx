@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 import type { Property } from "@/lib/properties"
 import { dummyProperties } from "@/lib/properties"
+import { Chatbot } from "@/ai-chatbot"
+import type { PropertyFilters as ChatbotFilters } from "@/ai-chatbot"
 
 export default function TenantDashboard() {
   const { user, isLoading } = useAuth()
@@ -49,6 +51,18 @@ export default function TenantDashboard() {
     localStorage.setItem("favorites", JSON.stringify(newFavorites))
   }
 
+  const handleChatbotFilters = (chatbotFilters: ChatbotFilters) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      ...(chatbotFilters.location && { location: chatbotFilters.location }),
+      ...(chatbotFilters.minPrice !== undefined && { minPrice: chatbotFilters.minPrice }),
+      ...(chatbotFilters.maxPrice !== undefined && { maxPrice: chatbotFilters.maxPrice }),
+      ...(chatbotFilters.propertyType && { propertyType: chatbotFilters.propertyType }),
+      ...(chatbotFilters.bedrooms !== undefined && { bedrooms: chatbotFilters.bedrooms.toString() }),
+      ...(chatbotFilters.amenities && { amenities: chatbotFilters.amenities })
+    }))
+  }
+
   const filteredProperties = useMemo(() => {
     return properties.filter((property) => {
       // Search filter
@@ -64,7 +78,7 @@ export default function TenantDashboard() {
       }
 
       // Location filter
-      if (filters.location && property.location !== filters.location) {
+      if (filters.location && !property.location.toLowerCase().includes(filters.location.toLowerCase())) {
         return false
       }
 
@@ -182,6 +196,9 @@ export default function TenantDashboard() {
         onToggleFavorite={toggleFavorite}
         isFavorite={selectedProperty ? favorites.includes(selectedProperty.id) : false}
       />
+
+      {/* AI Chatbot */}
+      <Chatbot onFiltersUpdate={handleChatbotFilters} />
     </div>
   )
 }
